@@ -115,15 +115,15 @@ navLinks.forEach(link => {
     }
 });
 
-// POPULATE MSI FILES FROM GITHUB REPO
+// POPULATE MSI FILES FROM ROOT OF MAIN BRANCH
 const versionSelect = document.getElementById('version');
-const apiUrl = 'https://api.github.com/repos/Sajeebsarker123/OptiZen-Web/contents/OptiZenVersion?ref=main';
+const apiUrl = 'https://api.github.com/repos/Sajeebsarker123/OptiZen-Web/contents?ref=main';
 
 fetch(apiUrl)
 .then(res => res.json())
 .then(files => {
     files.forEach(f => {
-        if(f.name.endsWith('.msi')){
+        if(f.name.endsWith('.msi')) { // only .msi files in root
             const option = document.createElement('option');
             option.value = f.download_url;
             option.textContent = f.name;
