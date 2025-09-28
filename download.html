@@ -12,7 +12,6 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 
 <style>
-/* GENERAL STYLES */
 body { font-family:'Segoe UI',sans-serif; background:#141414; color:#f5f5f5; margin:0; }
 header { background:#1e1e1e; padding:15px 20px; display:flex; align-items:center; justify-content:space-between; }
 header .logo a { color:#00c6ff; font-size:1.5rem; font-weight:bold; text-decoration:none; display:flex; align-items:center; }
@@ -21,55 +20,19 @@ nav ul { list-style:none; display:flex; margin:0; padding:0; }
 nav ul li { margin-left:20px; }
 nav ul li a { text-decoration:none; color:#f5f5f5; font-weight:bold; padding:8px 12px; display:flex; align-items:center; transition: color 0.3s ease; }
 nav ul li a i { margin-right:6px; }
-
-/* HERO SECTION */
 .hero { text-align:center; padding:60px 20px; }
 .hero h1 { font-size:2.5rem; margin-bottom:15px; color:#00c6ff; }
 .hero p { font-size:1.1rem; }
-
-/* DOWNLOAD SECTION */
-.download-container {
-    max-width:500px;
-    margin:40px auto;
-    padding:20px;
-    background:#1e1e1e;
-    border-radius:12px;
-    box-shadow:0 0 15px rgba(0,198,255,0.3);
-    text-align:center;
-}
-.download-container select {
-    width:100%;
-    padding:12px;
-    border-radius:10px;
-    border:none;
-    background:#141414;
-    color:#f5f5f5;
-    font-size:1rem;
-    margin-bottom:20px;
-}
-.download-container button {
-    padding:12px 25px;
-    border:none;
-    border-radius:10px;
-    background:#00c6ff;
-    color:#fff;
-    font-weight:bold;
-    cursor:pointer;
-    font-size:1rem;
-    transition:0.3s;
-}
+.download-container { max-width:500px; margin:40px auto; padding:20px; background:#1e1e1e; border-radius:12px; box-shadow:0 0 15px rgba(0,198,255,0.3); text-align:center; }
+.download-container select { width:100%; padding:12px; border-radius:10px; border:none; background:#141414; color:#f5f5f5; font-size:1rem; margin-bottom:20px; }
+.download-container button { padding:12px 25px; border:none; border-radius:10px; background:#00c6ff; color:#fff; font-weight:bold; cursor:pointer; font-size:1rem; transition:0.3s; }
 .download-container button:hover { background:#0072ff; }
-
-/* FOOTER */
 footer { text-align:center; padding:20px; border-top:2px solid #00c6ff; margin-top:40px; font-size:0.9rem; }
-
-/* ACTIVE PAGE HIGHLIGHT */
 nav ul li a.active { color:#00c6ff; }
 </style>
 </head>
 <body>
 
-<!-- HEADER -->
 <header>
   <div class="logo">
     <img src="icons/OptiZenlogo.png" alt="OptiZen Logo">
@@ -86,13 +49,11 @@ nav ul li a.active { color:#00c6ff; }
   </nav>
 </header>
 
-<!-- HERO -->
 <section class="hero">
   <h1>Download OptiZen</h1>
   <p>Select a version below to download the latest OptiZen release.</p>
 </section>
 
-<!-- DOWNLOAD SECTION -->
 <div class="download-container">
   <select id="version">
     <option value="">Select a version</option>
@@ -100,7 +61,6 @@ nav ul li a.active { color:#00c6ff; }
   <button id="downloadBtn"><i class="fas fa-download"></i> Download Now</button>
 </div>
 
-<!-- FOOTER -->
 <footer>
   &copy; 2025 OptiZen. All rights reserved.
 </footer>
@@ -115,17 +75,16 @@ navLinks.forEach(link => {
     }
 });
 
-// POPULATE MSI FILES FROM ROOT OF MAIN BRANCH
+// POPULATE MSI FILES FROM GITHUB RAW
 const versionSelect = document.getElementById('version');
-const apiUrl = 'https://api.github.com/repos/Sajeebsarker123/OptiZen-Web/contents?ref=main';
-
-fetch(apiUrl)
+fetch('https://api.github.com/repos/Sajeebsarker123/OptiZen-Web/contents?ref=main')
 .then(res => res.json())
 .then(files => {
     files.forEach(f => {
-        if(f.name.endsWith('.msi')) { // only .msi files in root
+        if(f.name.endsWith('.msi')) { 
             const option = document.createElement('option');
-            option.value = f.download_url;
+            // Use raw.githubusercontent.com for direct download
+            option.value = `https://raw.githubusercontent.com/Sajeebsarker123/OptiZen-Web/main/${f.name}`;
             option.textContent = f.name;
             versionSelect.appendChild(option);
         }
@@ -137,11 +96,17 @@ fetch(apiUrl)
 document.getElementById('downloadBtn').addEventListener('click', () => {
     const selected = versionSelect.value;
     if(!selected) return alert('Please select a version.');
-    window.location.href = selected;
+
+    // Create invisible link and trigger download
+    const a = document.createElement('a');
+    a.href = selected;
+    a.download = selected.split('/').pop();
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
 });
 </script>
 
-<!-- Font Awesome JS -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/js/all.min.js"></script>
 
 </body>
