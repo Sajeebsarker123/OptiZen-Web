@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>OptiZen Download</title>
+
+<!-- Favicon -->
+<link rel="icon" href="OptiZenlogo.png" type="image/png">
+
+<!-- Font Awesome -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+<style>
+/* GENERAL STYLES */
+body { font-family:'Segoe UI',sans-serif; background:#141414; color:#f5f5f5; margin:0; }
+header { background:#1e1e1e; padding:15px 20px; border-bottom:2px solid #00c6ff; display:flex; align-items:center; justify-content:space-between; }
+header .logo a { color:#00c6ff; font-size:1.5rem; font-weight:bold; text-decoration:none; display:flex; align-items:center; }
+header .logo img { height:40px; margin-right:10px; }
+nav ul { list-style:none; display:flex; margin:0; padding:0; }
+nav ul li { margin-left:20px; }
+nav ul li a { position: relative; text-decoration:none; color:#f5f5f5; font-weight:bold; padding:8px 12px; display:flex; align-items:center; transition: color 0.3s ease; }
+nav ul li a i { margin-right:6px; }
+nav ul li a:hover::after { content: ""; position: absolute; left: 50%; bottom: -2px; width: 70%; height: 2px; background: #00c6ff; transform: translateX(-50%); }
+
+/* HERO SECTION */
+.hero { text-align:center; padding:60px 20px; }
+.hero h1 { font-size:2.5rem; margin-bottom:15px; color:#00c6ff; }
+.hero p { font-size:1.1rem; }
+
+/* DOWNLOAD SECTION */
+.download-container {
+    max-width:500px;
+    margin:40px auto;
+    padding:20px;
+    background:#1e1e1e;
+    border-radius:12px;
+    box-shadow:0 0 15px rgba(0,198,255,0.3);
+    text-align:center;
+}
+.download-container select {
+    width:100%;
+    padding:12px;
+    border-radius:10px;
+    border:none;
+    background:#141414;
+    color:#f5f5f5;
+    font-size:1rem;
+    margin-bottom:20px;
+}
+.download-container button {
+    padding:12px 25px;
+    border:none;
+    border-radius:10px;
+    background:#00c6ff;
+    color:#fff;
+    font-weight:bold;
+    cursor:pointer;
+    font-size:1rem;
+    transition:0.3s;
+}
+.download-container button:hover { background:#0072ff; }
+
+/* FOOTER */
+footer { text-align:center; padding:20px; border-top:2px solid #00c6ff; margin-top:40px; font-size:0.9rem; }
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header>
+  <div class="logo">
+    <img src="OptiZenlogo.png" alt="OptiZen Logo">
+    <a href="index.html">OptiZen</a>
+  </div>
+  <nav>
+    <ul>
+      <li><a href="index.html"><i class="fas fa-home"></i> Home</a></li>
+      <li><a href="download.html"><i class="fas fa-download"></i> Download</a></li>
+      <li><a href="about.html"><i class="fas fa-info-circle"></i> About OptiZen</a></li>
+      <li><a href="contact.html"><i class="fas fa-envelope"></i> Contact Us</a></li>
+      <li><a href="support.html"><i class="fas fa-headset"></i> Support</a></li>
+    </ul>
+  </nav>
+</header>
+
+<!-- HERO -->
+<section class="hero">
+  <h1>Download OptiZen</h1>
+  <p>Select a version below to download the latest OptiZen release.</p>
+</section>
+
+<!-- DOWNLOAD SECTION -->
+<div class="download-container">
+  <select id="version">
+    <option value="">Select a version</option>
+  </select>
+  <button id="downloadBtn"><i class="fas fa-download"></i> Download Now</button>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  &copy; 2025 OptiZen. All rights reserved.
+</footer>
+
+<!-- JS -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/js/all.min.js"></script>
+<script>
+// Populate version selector from server
+const versionSelect = document.getElementById('version');
+fetch('http://localhost:3000/versions')
+  .then(res => res.json())
+  .then(files => {
+    files.forEach(f => {
+      const option = document.createElement('option');
+      option.value = f;       // relative path from server
+      option.textContent = f; // display name
+      versionSelect.appendChild(option);
+    });
+  })
+  .catch(err => console.error('Unable to fetch versions:', err));
+
+// Download button logic
+document.getElementById('downloadBtn').addEventListener('click', () => {
+  const selectedVersion = versionSelect.value;
+  if(!selectedVersion) return alert('Please select a version.');
+  window.location.href = `http://localhost:3000/download/${selectedVersion}`;
+});
+</script>
+
+</body>
+</html>
