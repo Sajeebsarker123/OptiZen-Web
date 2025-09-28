@@ -75,29 +75,36 @@ navLinks.forEach(link => {
     }
 });
 
-// POPULATE MSI FILES FROM GITHUB RAW
+// POPULATE MSI FILES FROM GITHUB RELEASES
 const versionSelect = document.getElementById('version');
-fetch('https://api.github.com/repos/Sajeebsarker123/OptiZen-Web/contents?ref=main')
+const releasesApi = 'https://api.github.com/repos/Sajeebsarker123/OptiZen-Web/releases/latest';
+
+fetch(releasesApi)
 .then(res => res.json())
-.then(files => {
-    files.forEach(f => {
-        if(f.name.endsWith('.msi')) { 
-            const option = document.createElement('option');
-            // Use raw.githubusercontent.com for direct download
-            option.value = `https://raw.githubusercontent.com/Sajeebsarker123/OptiZen-Web/main/${f.name}`;
-            option.textContent = f.name;
-            versionSelect.appendChild(option);
-        }
-    });
+.then(data => {
+    if(data.assets && data.assets.length > 0){
+        data.assets.forEach(asset => {
+            if(asset.name.endsWith('.msi')){
+                const option = document.createElement('option');
+                option.value = asset.browser_download_url;
+                option.textContent = asset.name;
+                versionSelect.appendChild(option);
+            }
+        });
+    } else {
+        const option = document.createElement('option');
+        option.value = '';
+        option.textContent = 'No versions available';
+        versionSelect.appendChild(option);
+    }
 })
-.catch(err => console.error('Unable to fetch versions:', err));
+.catch(err => console.error('Unable to fetch releases:', err));
 
 // DOWNLOAD BUTTON
 document.getElementById('downloadBtn').addEventListener('click', () => {
     const selected = versionSelect.value;
     if(!selected) return alert('Please select a version.');
 
-    // Create invisible link and trigger download
     const a = document.createElement('a');
     a.href = selected;
     a.download = selected.split('/').pop();
